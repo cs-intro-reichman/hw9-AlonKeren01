@@ -57,9 +57,28 @@ public class MemorySpace {
 	 *        the length (in words) of the memory block that has to be allocated
 	 * @return the base address of the allocated block, or -1 if unable to allocate
 	 */
-	public int malloc(int length) {		
-		//// Replace the following statement with your code
-		return -1;
+	public int malloc(int length) {
+		ListIterator ltr = freeList.iterator();
+
+		while(ltr.hasNext()){ //scans the freelist
+			if(ltr.current.block.length >= length){ //found a block
+
+				MemoryBlock mb = new MemoryBlock(ltr.current.block.baseAddress, length);
+
+				if(ltr.current.block.length == length){ //same length
+					freeList.remove(ltr.current.block);
+				} else{
+					ltr.current.block.baseAddress += length; //(3)
+					ltr.current.block.length -= length; //(3)
+				}
+				allocatedList.addLast(mb); //(2)
+				return allocatedList.getLast().block.baseAddress; //(4)
+			}
+
+			ltr.next();
+		}
+	
+		return -1; //unable to allocate
 	}
 
 	/**
@@ -71,7 +90,21 @@ public class MemorySpace {
 	 *            the starting address of the block to freeList
 	 */
 	public void free(int address) {
-		//// Write your code here
+		if (allocatedList.getSize() == 0) {
+			throw new IllegalArgumentException(
+					"index must be between 0 and size");
+		}
+		
+		ListIterator ltr = allocatedList.iterator();
+
+		while(ltr.hasNext()){
+			if(ltr.current.block.baseAddress == address){
+				allocatedList.remove(ltr.current.block);
+				freeList.addLast(ltr.current.block);
+				return;
+			}
+			ltr.next();
+		}
 	}
 	
 	/**
@@ -89,6 +122,30 @@ public class MemorySpace {
 	 */
 	public void defrag() {
 		/// TODO: Implement defrag test
-		//// Write your code here
+		ListIterator itr1 = freeList.iterator();
+		ListIterator itr2 = freeList.iterator();
+
+		while(itr1.hasNext()){
+			while(itr2.hasNext()){
+				int baseAddress = itr1.current.block.baseAddress;
+				int len = itr1.current.block.length;
+
+				if(len + baseAddress == itr2.current.block.baseAddress){
+					itr1.current.block.length += itr2.current.block.length;
+					freeList.remove(itr2.current.block);
+					itr2 = freeList.iterator();
+				}
+
+				itr2.next();
+			}
+			itr2 = freeList.iterator();
+			itr1.next();
+		}
+		
+	}
+
+	public static void main(String[]args){
+		
+		
 	}
 }
