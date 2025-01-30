@@ -157,7 +157,7 @@ public class LinkedList {
 	 *         if index is negative or greater than or equal to size
 	 */
 	public MemoryBlock getBlock(int index) {
-		if (index < 0 || index > size) {
+		if (index < 0 || index > size || size == 0) {
 			throw new IllegalArgumentException(
 					"index must be between 0 and size");
 		}
@@ -192,6 +192,11 @@ public class LinkedList {
 	 *        the node that will be removed from this list
 	 */
 	public void remove(Node node) {
+		if(node.block == null){
+			throw new IllegalArgumentException(
+				"ERROR NullPointerException!");
+		}
+
 		if(first == null){ //empty list
 			return;
 		}
@@ -287,8 +292,13 @@ public class LinkedList {
 		MemoryBlock m1 = new MemoryBlock(1, 10);
 		MemoryBlock m2 = new MemoryBlock(2, 13);
 		MemoryBlock m3 = new MemoryBlock(6, 6);
-		//q.addFirst(m1);
-		q.addLast(m2);
+		//Node node = null;
+		MemoryBlock m = null;
+		//q.addFirst(m);
+		q.add(0, m1);
+		//q.add(1, m2);
+		q.remove(0);
+		//q.addLast(m2);
 		//q.addLast(m3);
 		//q.remove(2); //remove by index
 		//q.remove(m3); //remove by memoryBlock
