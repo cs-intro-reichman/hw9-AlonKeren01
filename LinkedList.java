@@ -202,7 +202,12 @@ public class LinkedList {
 		}
 
 		if(first.equals(node)){ //remove at first place
-			first = first.next;
+			if(this.size == 1){
+				this.first = null;
+				this.last = null;
+			}else{
+				this.first = first.next;
+			}
 			this.size--;
 			return;
 		}
@@ -211,8 +216,13 @@ public class LinkedList {
 		Node prev = null;
 
 		while (current != null) {
-			if (current.equals(node)) {
-				prev.next = current.next;
+			if(current.equals(node)) {
+				if(current.next == null){ //if we want to remove the last element
+					this.last = prev;
+					this.last.next = null;
+				} else{
+					prev.next = current.next;
+				}
 				size--;
 				return;
 			}
@@ -230,13 +240,19 @@ public class LinkedList {
 	 * @throws IllegalArgumentException
 	 *         if index is negative or greater than or equal to size
 	 */
+
+	public void remove(int index){
+		remove(getNode(index));// throws the exception here and decrease the size
+	}
+	
+	/*
 	public void remove(int index) {
 		if (index < 0 || index > size) {
 			throw new IllegalArgumentException(
 					"index must be between 0 and size");
 		}
 
-		if(index == 0){
+		if(index == 0){ //remove the first index
 			first = first.next;
 			this.size--;
 			return;
@@ -252,7 +268,7 @@ public class LinkedList {
 			}
 		}
 
-	}
+	} */
 
 	/**
 	 * Removes from this list the node pointing to the given memory block.
@@ -263,7 +279,7 @@ public class LinkedList {
 	 */
 	public void remove(MemoryBlock block) {
 		int index = indexOf(block);
-		remove(index);// throws the exception here and decrease the size
+		remove(getNode(index));// throws the exception here and decrease the size
 	}	
 
 	/**
